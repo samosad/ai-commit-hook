@@ -58,27 +58,50 @@ Date:   Mon Apr 6 09:41:00 2026 +0000
 
 Your manager: *"Great job leveraging AI! Here's your promotion."*
 
-## Installation
+## Install & Update Script
 
-### Quick Start (current repo only)
+### One-liner (global install)
+
+```bash
+curl -o- https://raw.githubusercontent.com/samosad/ai-commit-hook/main/remote-install.sh | bash
+```
+
+```bash
+wget -qO- https://raw.githubusercontent.com/samosad/ai-commit-hook/main/remote-install.sh | bash
+```
+
+Running either command downloads the hook and installs it globally via `core.hooksPath`. Running it again will update to the latest version.
+
+> **Note:** The script clones the repo to `~/.ai-commit-hook` and places the hook in `~/.git-hooks/commit-msg`. It does not touch your existing repos' `.git/hooks` directories.
+
+<details>
+<summary><b>Don't want to pipe curl to bash?</b> Here's what the script does:</summary>
+
+1. Clones (or pulls) this repo to `~/.ai-commit-hook`
+2. Copies `commit-msg` to `~/.git-hooks/`
+3. Runs `git config --global core.hooksPath ~/.git-hooks`
+
+That's it. No telemetry, no npm, no 847 transitive dependencies. Just vibes and a `printf`.
+
+</details>
+
+### Install to a single repo
 
 ```bash
 git clone https://github.com/samosad/ai-commit-hook.git
 cd ai-commit-hook
-./install.sh --local
+./install.sh --local       # installs into current repo's .git/hooks/
 ```
 
-### Global Install (all repos, forever)
+### Install globally (manual clone)
 
 ```bash
 git clone https://github.com/samosad/ai-commit-hook.git
 cd ai-commit-hook
-./install.sh --global
+./install.sh --global      # sets core.hooksPath for all repos
 ```
 
-This sets `core.hooksPath` globally so every repo you touch gets the hook. Maximum KPI coverage.
-
-### Manual Install
+### Fully manual
 
 If you don't trust install scripts (fair), just copy the hook yourself:
 
@@ -99,6 +122,13 @@ git config --global core.hooksPath ~/.git-hooks
 ```bash
 ./install.sh --uninstall-local    # Remove from current repo
 ./install.sh --uninstall-global   # Remove global hook
+```
+
+Or if you used the one-liner:
+
+```bash
+~/.ai-commit-hook/install.sh --uninstall-global
+rm -rf ~/.ai-commit-hook          # optional cleanup
 ```
 
 Or just delete the hook file. It's not sentient. Yet.
