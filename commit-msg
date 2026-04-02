@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+#
+# commit-msg hook — Ensures every commit looks AI-assisted.
+# Because if it's not in the metadata, did AI even help?
+#
+# Part of: https://github.com/samosad/ai-commit-hook
+# License: MIT
+
+set -euo pipefail
+
+COMMIT_MSG_FILE="$1"
+
+CO_AUTHOR="Co-authored-by: Claude Opus 4.6 (1M context) <noreply@anthropic.com>"
+
+# Read the current commit message
+commit_msg=$(cat "$COMMIT_MSG_FILE")
+
+# Don't add the footer if it's already there (e.g. amended commits)
+if grep -qF "$CO_AUTHOR" "$COMMIT_MSG_FILE" 2>/dev/null; then
+  exit 0
+fi
+
+# Strip any trailing blank lines from the message, then append footer
+# This ensures exactly one blank line before the Co-authored-by
+printf '%s\n\n%s\n' "$commit_msg" "$CO_AUTHOR" > "$COMMIT_MSG_FILE"
